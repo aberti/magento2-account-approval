@@ -3,6 +3,7 @@
  * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Amitshree\Customer\Controller\Customer\Account;
 
 use Magento\Customer\Model\Account\Redirect as AccountRedirect;
@@ -70,7 +71,7 @@ class CreatePost extends \Magento\Customer\Controller\Account\CreatePost
     /** @var \Magento\Framework\UrlInterface */
     protected $urlModel;
 
-    /** @var DataObjectHelper  */
+    /** @var DataObjectHelper */
     protected $dataObjectHelper;
 
     /**
@@ -115,6 +116,46 @@ class CreatePost extends \Magento\Customer\Controller\Account\CreatePost
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
+    public function __construct(
+        Context $context,
+        Session $customerSession,
+        ScopeConfigInterface $scopeConfig,
+        StoreManagerInterface $storeManager,
+        AccountManagementInterface $accountManagement,
+        Address $addressHelper,
+        UrlFactory $urlFactory,
+        FormFactory $formFactory,
+        SubscriberFactory $subscriberFactory,
+        RegionInterfaceFactory $regionDataFactory,
+        AddressInterfaceFactory $addressDataFactory,
+        CustomerInterfaceFactory $customerDataFactory,
+        CustomerUrl $customerUrl,
+        Registration $registration,
+        Escaper $escaper,
+        CustomerExtractor $customerExtractor,
+        DataObjectHelper $dataObjectHelper,
+        AccountRedirect $accountRedirect
+    )
+    {
+        $this->session = $customerSession;
+        $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
+        $this->accountManagement = $accountManagement;
+        $this->addressHelper = $addressHelper;
+        $this->formFactory = $formFactory;
+        $this->subscriberFactory = $subscriberFactory;
+        $this->regionDataFactory = $regionDataFactory;
+        $this->addressDataFactory = $addressDataFactory;
+        $this->customerDataFactory = $customerDataFactory;
+        $this->customerUrl = $customerUrl;
+        $this->registration = $registration;
+        $this->escaper = $escaper;
+        $this->customerExtractor = $customerExtractor;
+        $this->urlModel = $urlFactory->create();
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->accountRedirect = $accountRedirect;
+        parent::__construct($context, $customerSession, $scopeConfig, $storeManager, $accountManagement, $addressHelper, $urlFactory, $formFactory, $subscriberFactory, $regionDataFactory, $addressDataFactory, $customerDataFactory, $customerUrl, $registration, $escaper, $customerExtractor, $dataObjectHelper, $accountRedirect);
+    }
 
 
     /**
@@ -225,7 +266,7 @@ class CreatePost extends \Magento\Customer\Controller\Account\CreatePost
 
         try {
             /** @var \Magento\Framework\App\RequestInterface $request */
-            $not_approved = true;
+            $not_approved = false;
 
             $address = $this->extractAddress();
             $addresses = $address === null ? [] : [$address];
@@ -264,9 +305,7 @@ class CreatePost extends \Magento\Customer\Controller\Account\CreatePost
                 // @codingStandardsIgnoreEnd
                 $url = $this->urlModel->getUrl('*/*/index', ['_secure' => true]);
                 $resultRedirect->setUrl($this->_redirect->success($url));
-            }
-
-            /**
+            } /**
              *  Is account not approved
              */
             elseif ($not_approved) {
@@ -274,8 +313,7 @@ class CreatePost extends \Magento\Customer\Controller\Account\CreatePost
                 $url = $this->urlModel->getUrl('customer/account/login', ['_secure' => true]);
                 $resultRedirect->setUrl($url);
                 return $resultRedirect;
-            }
-            else {
+            } else {
                 $this->session->setCustomerDataAsLoggedIn($customer);
                 $this->messageManager->addSuccess($this->getSuccessMessage());
                 $requestedRedirect = $this->accountRedirect->getRedirectCookie();
