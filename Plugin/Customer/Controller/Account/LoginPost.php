@@ -55,7 +55,7 @@ class LoginPost
                 try {
                     if (!empty($customer->getCustomAttributes())) {
                         if ($this->isAccountNotApproved($customer)) {
-                            $this->messageManager->addErrorMessage(__('Your account is not approved. Kindly contact website admin for assistance.'));
+                            $this->messageManager->addSuccessMessage(__('Your account is not approved. Kindly contact website admin for assistance.'));
                             $this->responseHttp->setRedirect('customer/account/login');
                             //@todo:: redirect to last visited url
                         } else {
